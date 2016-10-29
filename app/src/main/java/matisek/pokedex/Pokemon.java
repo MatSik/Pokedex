@@ -26,7 +26,6 @@ public class Pokemon{
         this.weight = weight;
     }
 
-
     public int getId() {
         return id;
     }

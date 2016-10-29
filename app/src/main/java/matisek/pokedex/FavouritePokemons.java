@@ -33,20 +33,36 @@ public class FavouritePokemons extends AppCompatActivity {
 
     List<Pokemon> pokemonList;
     Set<Integer> pokemonAlreadyInList;
+
+    ListView listViewOfPokemon;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_favourite_pokemons);
 
+        initializeCollections();
+        addDataToArray();
+        initializeViews();
+        setAdapterToListView();
+        setupListViewPokemonItem();
+    }
+
+    private void initializeCollections() {
         pokemonList = new ArrayList<>();
         pokemonAlreadyInList = new HashSet<>();
+    }
 
-        addDataToArray();
-
-        ListView listViewOfPokemon = (ListView) findViewById(R.id.listViewOfPokemons);
+    private void setAdapterToListView() {
         PokemonListAdapter pokemonAdapter = new PokemonListAdapter(this, pokemonList);
         listViewOfPokemon.setAdapter(pokemonAdapter);
+    }
 
+    private void initializeViews() {
+        listViewOfPokemon = (ListView) findViewById(R.id.listViewOfPokemons);
+    }
+
+    private void setupListViewPokemonItem() {
         listViewOfPokemon.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -62,44 +78,15 @@ public class FavouritePokemons extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-
-
-
-
-
     }
 
     public void addDataToArray(){
         String message;
         try {
-            FileInputStream fileInputStream = openFileInput(PokemonsOnline.DESCRIPTIONS_OF_POKEMONS_FILE_STRING);
-
-            InputStreamReader inputStreamReader = new InputStreamReader(fileInputStream);
-
-            BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
-
+            BufferedReader bufferedReader = new BufferedReader(getInputStreamReader());
             while ((message = bufferedReader.readLine()) != null) {
-
-                StringTokenizer stringTokenizer = new StringTokenizer(message, "$");
-
-                String id = stringTokenizer.nextToken();
-
-                String name = stringTokenizer.nextToken();
-
-                String experience = stringTokenizer.nextToken();
-
-                String height = stringTokenizer.nextToken();
-
-                String weight = stringTokenizer.nextToken();
-
-                FileInputStream fis = getApplicationContext().openFileInput(name + ".png");
-                Bitmap b = BitmapFactory.decodeStream(fis);
-                fis.close();
-
-                if(!pokemonAlreadyInList.contains(Integer.valueOf(id))) {
-                    pokemonAlreadyInList.add(Integer.valueOf(id));
-                    pokemonList.add(new Pokemon(Integer.valueOf(id), name, b, Integer.valueOf(experience), Integer.valueOf(height), Integer.valueOf(weight)));
-                }
+                Pokemon readedPokemon = createPokemonFromToken(new StringTokenizer(message, "$"));
+                checkDuplicate(readedPokemon);
             }
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -108,20 +95,45 @@ public class FavouritePokemons extends AppCompatActivity {
         }
     }
 
+    private void checkDuplicate(Pokemon readedPokemon) {
+        if(!pokemonAlreadyInList.contains(readedPokemon.getId())) {
+            pokemonAlreadyInList.add(readedPokemon.getId());
+            pokemonList.add(readedPokemon);
+        }
+    }
+
+    private Pokemon createPokemonFromToken(StringTokenizer pokemonTokenizer) throws IOException {
+        String id = pokemonTokenizer.nextToken();
+        String name = pokemonTokenizer.nextToken();
+        String experience = pokemonTokenizer.nextToken();
+        String height = pokemonTokenizer.nextToken();
+        String weight = pokemonTokenizer.nextToken();
+        FileInputStream fis = getApplicationContext().openFileInput(name + ".png");
+        Bitmap pokemonImage = BitmapFactory.decodeStream(fis);
+        fis.close();
+        return new Pokemon(Integer.valueOf(id), name, pokemonImage, Integer.valueOf(experience), Integer.valueOf(height), Integer.valueOf(weight));
+    }
+
+    private InputStreamReader getInputStreamReader() throws FileNotFoundException {
+        FileInputStream fileInputStream = openFileInput(PokemonsOnline.DESCRIPTIONS_OF_POKEMONS_FILE_STRING);
+        return new InputStreamReader(fileInputStream);
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
 
-        MenuItem findID = menu.add(0,1,1,"Wyszukaj");
-
+        MenuItem findID = menu.add(0,1,1,"find");
         return super.onCreateOptionsMenu(menu);
     }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-
-
         final MaterialDialog materialDialog = new MaterialDialog.Builder( FavouritePokemons.this)
                 .customView(R.layout.layout_for_dialog, true)
                 .show();
+        setupViewButton(materialDialog);
+        return true;
+    }
+    private void setupViewButton(final MaterialDialog materialDialog){
         final View view  = materialDialog.getView();
         ((Button)view.findViewById(R.id.buttonFind)).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -134,12 +146,10 @@ public class FavouritePokemons extends AppCompatActivity {
                 materialDialog.dismiss();
             }
         });
-        return true;
     }
 
     private void setDescription(Pokemon findedPokemon) {
         Bundle send = new Bundle();
-
         send.putInt("id",findedPokemon.getId());
         send.putString("name",findedPokemon.getName());
         send.putInt("experience",findedPokemon.getExperience());

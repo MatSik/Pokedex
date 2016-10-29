@@ -22,7 +22,6 @@
         <activity android:name=".PokemonsOnline" />
         <activity android:name=".FavouritePokemons" />
         <activity android:name=".FavoritePokemonInfo" />
-        <activity android:name=".PokedexImage"></activity>
     </application>
 
 </manifest>

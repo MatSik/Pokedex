@@ -21,7 +21,6 @@ public class PokemonListAdapter extends BaseAdapter {
 
     public PokemonListAdapter(Activity context, List<Pokemon> pokemons) {
         super();
-
         this.pokemons = pokemons;
         this.inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }

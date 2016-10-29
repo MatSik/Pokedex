@@ -29,10 +29,24 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //wlacz();
         setContentView(R.layout.activity_main);
+        intializeViews();
+        setBackgroundsForImages();
+        setupPokemonOnlineButton();
+        setupFavouritePokemonButton();
+    }
+
+    private void intializeViews() {
         pokemonOnline = (Button) findViewById(R.id.buttonPokemonOnline);
+        favouritePokemons = (Button) findViewById(R.id.buttonFavourite);
+    }
+
+    private void setBackgroundsForImages() {
         pokemonOnline.setBackgroundResource(R.drawable.custom_button_pokeball);
+        favouritePokemons.setBackgroundResource(R.drawable.custom_button_star);
+    }
+
+    private void setupPokemonOnlineButton() {
         pokemonOnline.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -40,9 +54,9 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(pokemonOnlineIntent);
             }
         });
+    }
 
-        favouritePokemons = (Button) findViewById(R.id.buttonFavourite);
-        favouritePokemons.setBackgroundResource(R.drawable.custom_button_star);
+    private void setupFavouritePokemonButton() {
         favouritePokemons.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -52,13 +66,5 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    public void wlacz() {
-        Toast toast = new Toast(this);
-        toast.setDuration(Toast.LENGTH_LONG);
-        toast.setGravity(Gravity.CENTER, 0, 0);
-        LayoutInflater lin = getLayoutInflater();
-        View appear = lin.inflate(R.layout.activity_pokedex_image, (ViewGroup) findViewById(R.id.toast_linear_layout));
-        toast.setView(appear);
-        toast.show();
-    }
+
 }

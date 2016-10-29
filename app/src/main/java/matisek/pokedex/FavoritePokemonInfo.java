@@ -38,16 +38,7 @@ public class FavoritePokemonInfo extends AppCompatActivity {
         initlializateTextViews();
         initlializateButtons();
         setInvisible();
-
-
-
-        try {
-            setDescription();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-
+        setDescription();
     }
 
     private void setInvisible() {
@@ -56,16 +47,23 @@ public class FavoritePokemonInfo extends AppCompatActivity {
         save.setVisibility(View.INVISIBLE);
     }
 
-    private void setDescription() throws IOException {
+    private void setDescription() {
         Intent intent = getIntent();
         Bundle recive = intent.getExtras();
-
-        imageOfPokemon.setImageBitmap(getImageOfPokemon(recive.getString("name")));
+        setPokemonImage(recive);
         number.setText(String.valueOf(recive.getInt("id")));
         name.setText(recive.getString("name"));
         experience.setText(String.valueOf(recive.getInt("experience")));
         height.setText(String.valueOf(recive.getInt("height")));
         weight.setText(String.valueOf(recive.getInt("weight")));
+    }
+
+    private void setPokemonImage(Bundle recive) {
+        try {
+            imageOfPokemon.setImageBitmap(getImageOfPokemon(recive.getString("name")));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void initlializateTextViews() {
