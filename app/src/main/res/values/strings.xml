@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">Pokedex</string>
+    <string name="number">Number:</string>
+    <string name="name">Name:</string>
+    <string name="next">NEXT</string>
+    <string name="previous">PREVIOUS</string>
+    <string name="save">SAVE</string>
+    <string name="experience">experience:</string>
+    <string name="height">height:</string>
+    <string name="weight">weight:</string>
+    <string name="enter_identify">Enter name or id</string>
+    <string name="button_ok">find</string>
+    <string name="list_of_pokemon">All Pokemons</string>
+    <string name="favourite_pokemons">favourite</string>
+</resources>
